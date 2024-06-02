@@ -8,6 +8,8 @@ command -v "unzip" >/dev/null 2>&1 || { echo >&2 "'unzip' is required, but it's 
 
 # *** download depot_tools ***
 
+export PATH=$PWD/depot_tools:$PATH
+
 if [ ! -d depot_tools ]; then
   mkdir depot_tools
   pushd depot_tools
