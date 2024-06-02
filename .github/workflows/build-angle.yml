@@ -54,7 +54,7 @@ jobs:
       - name: build
         id: build
         shell: bash
-        run: build.sh
+        run: ./build.sh
 
       - name: release
         id: release
