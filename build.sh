@@ -51,6 +51,7 @@ popd
 
 # *** prepare output folder ***
 
+rm -rf angle
 mkdir -p angle
 mkdir -p angle/bin
 mkdir -p angle/lib
