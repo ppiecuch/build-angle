@@ -11,3 +11,61 @@ index 1e76a54cc..eb16f372f 100644
  
      # /MD specifies msvcrt.lib as the CRT library, which is the dynamic+release
      # version. Rust needs to agree, and its default mode is dynamic+release, so
+diff --git src/gpu_info_util/SystemInfo_macos.mm src/gpu_info_util/SystemInfo_macos.mm
+--- src/gpu_info_util/SystemInfo_macos.mm	2024-06-03 14:19:05
++++ src/gpu_info_util/SystemInfo_macos.mm	2024-06-03 14:19:51
+@@ -5,6 +5,8 @@
+ //
+ 
+ // SystemInfo_macos.mm: implementation of the macOS-specific parts of SystemInfo.h
++
++#define GL_SILENCE_DEPRECATION
+ 
+ #include "gpu_info_util/SystemInfo_internal.h"
+ 
+diff --git BUILD.gn BUILD.gn
+--- BUILD.gn	2024-06-03 19:19:00
++++ BUILD.gn	2024-06-03 20:40:43
+@@ -1577,6 +1577,25 @@
+     sources += [ "src/libGLESv1_CM/libGLESv1_CM.def" ]
+     deps += [ ":angle_version" ]
+   }
++}
++
++angle_static_library("libGLESv1_CM_static") {
++  sources = libglesv1_cm_sources
++
++  public_configs = [ ":angle_static_config" ]
++
++  configs += [
++    ":angle_gl_visibility_config",
++    ":debug_annotations_config",
++    ":gl_prototypes",
++  ]
++
++  defines = []
++
++  deps = [
++    ":includes",
++    ":libGLESv2_static",
++  ]
+ }
+ 
+ config("libEGL_egl_loader_config") {
+@@ -1669,6 +1689,8 @@
+ }
+ 
+ libEGL_template("libEGL_static") {
++  complete_static_lib = true
++  suppressed_configs = [ "//build/config/compiler:thin_archive" ]
+   target_type = "angle_static_library"
+   public_configs = [ ":angle_static_config" ]
+   deps = [ ":libGLESv2_static" ]
+@@ -1927,6 +1927,7 @@
+ group("angle_static") {
+   public_deps = [
+     ":libEGL_static",
++    ":libGLESv1_CM_static",
+     ":libGLESv2_static",
+     ":preprocessor",
+     ":translator",
